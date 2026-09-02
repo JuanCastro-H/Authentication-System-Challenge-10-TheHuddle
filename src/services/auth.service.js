@@ -3,10 +3,12 @@
 // ===========================
 
 // --- Cliente De Comunicacion Con PostgresSQL
+const { verify } = require("jsonwebtoken");
 const prisma = require("../config/database");
 
 // --- Funcion Para Hashear Una Clave ---
-const { hashPassword } = require("./password.service")
+const { hashPassword, verifyPassword } = require("./password.service");
+const { generateToken } = require("./jwt.service");
 
 
 // ------------------------------
@@ -65,7 +67,35 @@ const registerUser = async ({email, password}) => {
     };
 };
 
+
+// ------------------------------
+// INICIAR SESION
+// ------------------------------
+
+const loginUser = async ({email, password, ipAddress}) => {
+
+    // --- Normalizar Email ---
+    const normalizedEmail = email
+        .trim()
+        .toLowerCase();
+    
+
+    // --- Buscar Usuario ---
+    const user = await prisma.user.findUnique({
+        where: {
+            email: normalizedEmail
+        },
+        include: {
+            role: true
+        }
+    });
+
+
+    
+};
+
 // --- Exportar Funciones Del Modulo ---
 module.exports = {
-    registerUser
+    registerUser,
+    loginUser
 };
