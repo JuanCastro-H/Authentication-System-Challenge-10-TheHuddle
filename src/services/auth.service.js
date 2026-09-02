@@ -9,6 +9,41 @@ const prisma = require("../config/database");
 // --- Funcion Para Hashear Una Clave ---
 const { hashPassword, verifyPassword } = require("./password.service");
 const { generateToken } = require("./jwt.service");
+const { success } = require("zod");
+
+
+// ----------------------------------------
+// CONFIGURACIÓN DE SEGURIDAD
+// ----------------------------------------
+
+// --- Intentos Antes De Bloquear La Cuenta ---
+const MAX_FAILED_ATTEMPTS = 5;
+
+// --- Tiempo De Bloqueo ---
+const LOCK_TIME_MINUTES = 15;
+
+
+
+// ------------------------------
+// REGISTRAR INTENTOS DE LOGIN
+// ------------------------------
+
+const createLoginAttempt = async ({
+    userId,
+    email,
+    ipAddress,
+    success
+}) => {
+
+    await prisma.loginAttempt.create({
+        data: {
+            userId,
+            email,
+            ipAddress,
+            success
+        }
+    });
+};
 
 
 // ------------------------------
@@ -86,12 +121,12 @@ const loginUser = async ({email, password, ipAddress}) => {
             email: normalizedEmail
         },
         include: {
-            role: true
+            role: true // Traer el rol relacionado al usuario.
         }
     });
 
 
-    // --- Usuario No Existe ---
+    // --- Si El Usuario No Existe ---
     if (!user) {
 
         throw new Error("INVALID_CREDENCIALS");
@@ -129,7 +164,7 @@ const loginUser = async ({email, password, ipAddress}) => {
 
     }
 
-    
+
     // --- Generar JWT ---
 
     const token = generateToken({
