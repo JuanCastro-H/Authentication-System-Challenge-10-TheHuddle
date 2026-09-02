@@ -1,6 +1,15 @@
-const { registerSchema } = require("../validators/auth.validator");
+/// ===================================
+// CONTROLADOR DE AUTENTICACION
+// ====================================
 
-const { registerUser }   = require("../services/auth.service");
+const { registerSchema, loginSchema } = require("../validators/auth.validator");
+
+const { registerUser, loginUser }   = require("../services/auth.service");
+
+
+// -----------------------------
+// REGISTRO DE NUEVOS USUARIOS
+// -----------------------------
 
 const register = async (req, res) => {
 
@@ -51,6 +60,36 @@ const register = async (req, res) => {
 };
 
 
+
+// -----------------------
+// LOGIN
+// -----------------------
+
+const login = async (req, res) => {
+
+    try {
+
+        // --- VALIDAR DATOS ---
+
+        const validation = loginSchema.safeParse(req.body);
+
+        if (!validation.success) {
+
+            return res.status(400).json({
+                error: "Invalid data",
+                details: validation.error.flatten()
+            });
+
+        }
+
+
+
+    }
+};
+
+
+
 module.exports = {
-    register
+    register,
+    login
 };
