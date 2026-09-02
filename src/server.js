@@ -1,3 +1,11 @@
+// ========================================
+//  PUNTO DE ENTRADA DEL SERVIDOR
+// ========================================
+//  Arranca la aplicacion express
+//  inicializa el puerto del servidor
+//  y cargar el entorno.
+
+
 // --- Cargar Variables De Entorno ---
 require("dotenv").config();
 

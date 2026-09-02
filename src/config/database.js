@@ -1,3 +1,6 @@
+// ====================================
+// CONFIGURACION DE LA BASE DE DATOS
+// ====================================
 const { PrismaClient } = require("../../prisma/generated/prisma/client");
 const { PrismaPg } = require("@prisma/adapter-pg");
 

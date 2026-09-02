@@ -1,3 +1,7 @@
+// =======================================
+// SERVICIO DE SEGURIDAD DE CONTRASENIA
+// =======================================
+
 // --- IMPORTAR LIBRERIA PARA ENCRIPTAR CLAVES ---
 const argon2 = require("argon2");
 

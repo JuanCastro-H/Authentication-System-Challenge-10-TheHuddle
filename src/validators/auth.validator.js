@@ -1,3 +1,7 @@
+// ======================================
+// VALIDACION DE DATOS DE AUTENTICACION
+// ======================================
+
 const { z } = require("zod"); // Libreria de validacion de datos.
 
 // --- Validacion Para El Registro De Usuarios ---
