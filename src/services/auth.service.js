@@ -2,8 +2,10 @@
 // SERVICIO DE AUTENTICACION
 // ===========================
 
+// --- Cliente De Comunicacion Con PostgresSQL
 const prisma = require("../config/database");
 
+// --- Funcion Para Hashear Una Clave ---
 const { hashPassword } = require("./password.service")
 
 
@@ -14,7 +16,7 @@ const { hashPassword } = require("./password.service")
 const registerUser = async ({email, password}) => {
 
     // --- Normalizar Email ---
-    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase(); // Eliminar espacios y convertir a minusculas.
 
 
     // ---- Comprobar Si Existe El Usuario ---
@@ -24,20 +26,20 @@ const registerUser = async ({email, password}) => {
         }
     });
 
-    if (existingUser) { // Si existe el usuario...
+    if (existingUser) { // Si existe el usuario detenemos el registro.
         throw new Error("USER_ALREADY_EXISTS");
     }
 
 
-    // --- Asignar Rol Por Defecto ---
+    // --- Asignar Rol "Usuario" Por Defecto ---
     const userRole = await prisma.role.findUnique({
         where: {
             name: "user"
         }
     });
 
-    if (!userRole){ // Sino existe un rol...
-        throw new Error("DEFAULT_ROLE_NOT_FOUND");
+    if (!userRole){ // Sino existe "User... 
+        throw new Error("DEFAULT_ROLE_NOT_FOUND"); // Notificar de error en la configuracion.
     }
 
 
@@ -48,13 +50,13 @@ const registerUser = async ({email, password}) => {
     // --- Crear Usuario ---
     const user = await prisma.user.create({
         data: {
-            email: normalizedEmail,
-            passwordHash,
-            roleId: userRole.id
+            email: normalizedEmail,  // Correo.
+            passwordHash,            // Clave hasheada.
+            roleId: userRole.id      // Id del nuevo usuario.
         }
     });
 
-    // --- Retornar Datos Del Usuario ---
+    // --- Retornar Datos Publicos Del Usuario ---
     return {
         id: user.id,
         email: user.email,
