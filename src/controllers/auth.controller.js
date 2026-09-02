@@ -82,6 +82,10 @@ const login = async (req, res) => {
 
         }
 
+        
+        // --- OBTENER IP DEL CLIENTE ---
+
+        const ipAddress = req.ip || req.socket.remoteAddress
 
 
     }
