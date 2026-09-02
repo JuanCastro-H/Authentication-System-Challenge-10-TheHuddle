@@ -88,12 +88,23 @@ const login = async (req, res) => {
         const ipAddress = req.ip || req.socket.remoteAddress
 
 
-                // --- INTENTAR LOGIN ---
+        // --- INTENTAR LOGIN ---
 
         const result = await loginUser({
             ...validation.data,
 
             ipAddress
+        });
+
+
+        // --- RESPUESTA EXITOSA ---
+
+        return res.status(200).json({
+
+            message: "Login successful",
+
+            ...result
+
         });
 
     }
