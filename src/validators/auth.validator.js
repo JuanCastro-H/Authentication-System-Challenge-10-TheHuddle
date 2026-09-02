@@ -21,8 +21,22 @@ const registerSchema = z.object({
 
 });
 
+// --- Validacion Para El Logueo De Usuario ---
+const loginSchema = z.object({
+    email: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .email(),
+
+    password: z
+        .string()
+        .min(1)
+});
+
 
 // --- Exportar Esquema De Registro ---
 module.exports = {
-    registerSchema
+    registerSchema,
+    loginSchema
 };
