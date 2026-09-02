@@ -107,7 +107,20 @@ const login = async (req, res) => {
 
         });
 
+    } catch (error) {
+
+        // --- CUENTA INACTIVA ---
+
+        if (error.message === "ACCOUNT_INACTIVE"){
+
+            return res.status(403).json({
+                error: "Account is inactive"
+            });
+
+        }
+
     }
+
 };
 
 
