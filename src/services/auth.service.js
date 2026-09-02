@@ -91,6 +91,43 @@ const loginUser = async ({email, password, ipAddress}) => {
     });
 
 
+    // --- Usuario No Existe ---
+    if (!user) {
+
+        throw new Error("INVALID_CREDENCIALS");
+
+    }
+
+
+    // --- Comprobar Si La Cuenta Esta Activa ---
+    if (!user.isActive) {
+
+        throw new Error("ACCOUNT_INACTIVE");
+
+    }
+
+
+    // --- Comprobar Si La Cuenta Esta Bloqueada ---
+    if (user.lockedUntil && user.lockedUntil > new Date()){
+
+        throw new Error("ACCOUNT_LOCKED");
+
+    }
+
+
+    // --- Verificar Contrasenia ---
+    const passwordIsValid = await verifyPassword(
+        user.passwordHash,
+        password
+    );
+
+
+    // --- Contrasenia Incorrecta ---
+    if (!passwordIsValid){
+
+        throw new Error("INVALID_CREDENTIALS");
+
+    }
     
 };
 
