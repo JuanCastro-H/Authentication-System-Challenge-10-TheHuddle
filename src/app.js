@@ -14,6 +14,9 @@ const cookieParser = require("cookie-parser"); // Datos: Analiza y estructura la
 // --- Crear Instancia De La Aplicacion ---
 const app = express(); 
 
+// --- RUTAS ---
+const authRoutes = require("./routes/auth.routes"); // Ruta de autenticacion
+
 
 // ========================================
 // MIDDLEWARES
@@ -33,6 +36,9 @@ app.use(helmet());
 
 // CORS
 app.use(cors());
+
+// RUTAS DE AUTENTICACION
+app.use("/auth", authRoutes);
 
 
 // ========================================
