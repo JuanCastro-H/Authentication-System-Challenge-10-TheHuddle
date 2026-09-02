@@ -119,6 +119,16 @@ const login = async (req, res) => {
 
         }
 
+
+        // --- CUENTA BLOQUEADA ---
+
+        if (error.message === "ACCOUNT_LOCKED"){
+
+            return res.status(423).json({
+                error: "Account is temporarily locked"
+            });
+        }
+
     }
 
 };
