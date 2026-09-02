@@ -141,6 +141,16 @@ const login = async (req, res) => {
 
         }
 
+
+        // --- ERROR DESCONOCIDO ---
+
+        console.error(error);
+
+        return res.status(500).json({
+            error: "Internal server error"
+        });
+
+
     }
 
 };
