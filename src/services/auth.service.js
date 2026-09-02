@@ -128,6 +128,33 @@ const loginUser = async ({email, password, ipAddress}) => {
         throw new Error("INVALID_CREDENTIALS");
 
     }
+
+    
+    // --- Generar JWT ---
+
+    const token = generateToken({
+
+        sub: user.id,
+        
+        email: user.email,
+
+        role: user.role.name
+
+    });
+
+    // --- Devolver Resultado ---
+
+    return {
+        token,
+
+        user: {
+            id: user.id,
+            email: user.email,
+            role: user.role
+        }
+    };
+
+
     
 };
 
