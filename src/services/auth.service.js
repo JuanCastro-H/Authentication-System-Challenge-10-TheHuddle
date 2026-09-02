@@ -66,6 +66,6 @@ const registerUser = async ({email, password}) => {
 };
 
 // --- Exportar Funciones Del Modulo ---
-modulo.exports = {
+module.exports = {
     registerUser
 };
