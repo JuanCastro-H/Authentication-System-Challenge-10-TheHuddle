@@ -129,6 +129,18 @@ const login = async (req, res) => {
             });
         }
 
+
+        
+        // --- CREDENCIALES INCORRECTAS ---
+        
+        if (error.message === "INVALID_CREDENTIALS"){
+
+            return res.status(401).json({
+                error: "Invalid credentials"
+            });
+
+        }
+
     }
 
 };
