@@ -167,6 +167,14 @@ const loginUser = async ({email, password, ipAddress}) => {
     }
 
 
+        // --- Comprobar Si La Cuenta Esta Bloqueada ---
+    if (user.lockedUntil && user.lockedUntil > new Date()){
+
+        throw new Error("ACCOUNT_LOCKED");
+
+    }
+
+
     // --- Verificar Contrasenia ---
     const passwordIsValid = await verifyPassword(
         user.passwordHash,
