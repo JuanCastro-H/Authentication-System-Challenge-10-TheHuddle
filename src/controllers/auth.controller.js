@@ -157,7 +157,19 @@ const login = async (req, res) => {
 
 
 
+// --- Obtener Datos Del Usuario De La Session Actual ---
+const getCurrentUser = async (req, res) => {
+
+    return res.status(200).json({
+        user: req.user
+    });
+
+};
+
+
+
 module.exports = {
     register,
-    login
+    login,
+    getCurrentUser
 };
