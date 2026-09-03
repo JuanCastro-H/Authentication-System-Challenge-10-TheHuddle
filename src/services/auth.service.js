@@ -245,6 +245,21 @@ const loginUser = async ({email, password, ipAddress}) => {
     });
 
 
+    // --- Reiniciar Contador ---
+
+    await prisma.user.update({
+
+        where: {
+            id: user.id
+        },
+        data: {
+            failedLoginAttempts: 0,
+            lockedUntil: null
+        }
+
+    });
+
+
     // --- Generar JWT ---
 
     const token = generateToken({
