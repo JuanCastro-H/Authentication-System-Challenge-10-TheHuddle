@@ -129,6 +129,16 @@ const loginUser = async ({email, password, ipAddress}) => {
     // --- Si El Usuario No Existe ---
     if (!user) {
 
+        //  Registrar intento de registro fallido.
+        await createLoginAttempt({
+
+            userId: null,
+            email: normalizedEmail,
+            ipAddress,
+            success: false
+
+        });
+
         throw new Error("INVALID_CREDENCIALS");
 
     }
@@ -157,12 +167,6 @@ const loginUser = async ({email, password, ipAddress}) => {
     );
 
 
-    // --- Contrasenia Incorrecta ---
-    if (!passwordIsValid){
-
-        throw new Error("INVALID_CREDENTIALS");
-
-    }
 
 
     // --- Generar JWT ---
