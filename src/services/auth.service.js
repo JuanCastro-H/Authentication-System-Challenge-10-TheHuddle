@@ -181,6 +181,55 @@ const loginUser = async ({email, password, ipAddress}) => {
         password
     );
 
+    
+    // --- Contrasenia Incorrecta ---
+    if (!passwordIsValid){
+
+        // Registrar intentos
+        await createLoginAttempt({
+
+            userId: user.id,
+            email: user.email,
+            ipAddress,
+            success: false
+
+        });
+
+        // Aumentar El Numero De Intentos Fallidos
+        const failedAttempts = user.failedLoginAttempts + 1;
+
+        // Llego Al Limite?
+        if (failedAttempts >= MAX_FAILED_ATTEMPTS){
+
+            // Calcular Tiempo Del Bloqueo.
+            const lockedUntil = new Date(Date.now() + LOCK_TIME_MINUTES * 60 * 1000);
+
+            await prisma.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    failedLoginAttempts: failedAttempts,
+                    lockedUntil
+                }
+            });
+        
+        } else {
+
+            await prisma.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    failedLoginAttempts: failedAttempts
+                }
+            });
+
+        }
+
+        throw new Error("INVALID_CREDENTIALS");
+
+    }
 
 
 
