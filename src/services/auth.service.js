@@ -147,6 +147,13 @@ const loginUser = async ({email, password, ipAddress}) => {
     // --- Comprobar Si La Cuenta Esta Activa ---
     if (!user.isActive) {
 
+        await createLoginAttempt({
+            userId: user.id,
+            email: user.email,
+            ipAddress,
+            success: false
+        });
+
         throw new Error("ACCOUNT_INACTIVE");
 
     }
