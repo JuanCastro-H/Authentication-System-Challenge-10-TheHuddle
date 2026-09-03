@@ -181,7 +181,7 @@ const loginUser = async ({email, password, ipAddress}) => {
         password
     );
 
-    
+
     // --- Contrasenia Incorrecta ---
     if (!passwordIsValid){
 
@@ -231,6 +231,18 @@ const loginUser = async ({email, password, ipAddress}) => {
 
     }
 
+
+
+    // --- Login Correcto ---
+
+    await createLoginAttempt({
+
+        userId: user.id,
+        email: user.email,
+        ipAddress,
+        success: true
+
+    });
 
 
     // --- Generar JWT ---
