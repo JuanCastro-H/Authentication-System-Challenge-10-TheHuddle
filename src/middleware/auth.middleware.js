@@ -1,5 +1,13 @@
+// =============================================
+// VERIFICAR SI EL USUARIO TIENE UN JWT VALIDO
+// =============================================
+
+// --- Obtener Funcion Para verificar Tokens ---
 const { verifyToken } = require("../services/jwt.service");
 
+// -------------------------------
+// --- AUTENTICAR TOKEN ---
+// -------------------------------
 const authenticateToken = (req, res, next) => {
 
     // --- Obtener Authorization ---
@@ -27,7 +35,7 @@ const authenticateToken = (req, res, next) => {
         const decoded = verifyToken(token);
 
         // --- Guardar Usuario Autenticado ---
-        req.user = decode;
+        req.user = decoded;
 
         // --- Continuar Con La Peticion ---
         next();
