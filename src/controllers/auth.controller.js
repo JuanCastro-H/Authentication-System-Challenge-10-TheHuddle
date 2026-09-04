@@ -161,9 +161,19 @@ const login = async (req, res) => {
 const getCurrentUser = async (req, res) => {
 
     return res.status(200).json({
-        user: req.user
+        user: req.user // Obtener datos del usuario.
     });
 
+};
+
+
+// --- Traer Panel De Administrador ---
+const getAdminPanel = (req, res) => {
+
+    return res.status(200).json({
+        message: "Welcome to the admin panel",
+        user: req.user
+    });
 };
 
 
@@ -171,5 +181,6 @@ const getCurrentUser = async (req, res) => {
 module.exports = {
     register,
     login,
-    getCurrentUser
+    getCurrentUser,
+    getAdminPanel
 };
