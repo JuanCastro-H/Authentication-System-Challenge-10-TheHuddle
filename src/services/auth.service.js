@@ -3,13 +3,14 @@
 // ===========================
 
 // --- Cliente De Comunicacion Con PostgresSQL
-const { verify } = require("jsonwebtoken");
 const prisma = require("../config/database");
 
 // --- Funcion Para Hashear Una Clave ---
 const { hashPassword, verifyPassword } = require("./password.service");
 const { generateToken } = require("./jwt.service");
-const { success } = require("zod");
+
+
+const { hashToken, generateSessionPlaceholder } = require("./session.service");
 
 
 // ----------------------------------------
@@ -21,6 +22,8 @@ const MAX_FAILED_ATTEMPTS = 5;
 
 // --- Tiempo De Bloqueo ---
 const LOCK_TIME_MINUTES = 15;
+
+const SESSION_DURATION_MINUTES = 15;
 
 
 
@@ -167,7 +170,7 @@ const loginUser = async ({email, password, ipAddress}) => {
     }
 
 
-        // --- Comprobar Si La Cuenta Esta Bloqueada ---
+    // --- Comprobar Si La Cuenta Esta Bloqueada ---
     if (user.lockedUntil && user.lockedUntil > new Date()){
 
         throw new Error("ACCOUNT_LOCKED");
@@ -232,7 +235,6 @@ const loginUser = async ({email, password, ipAddress}) => {
     }
 
 
-
     // --- Login Correcto ---
 
     await createLoginAttempt({
@@ -259,6 +261,21 @@ const loginUser = async ({email, password, ipAddress}) => {
 
     });
 
+    // --- Calcular Fecha De Expiracion De La Session ---
+    const expired = new Date(
+        Date.now() + SESSION_DURATION_MINUTES * 60 * 1000
+    );
+
+
+    // --- Registrar Session En La Base De Datos ---
+    const session = await prisma.session.create({
+        data: {
+            sessionTokenHash: generateSessionPlaceholder(),
+            userId: user.id,
+            expiresAt
+        }
+    });
+
 
     // --- Generar JWT ---
 
@@ -268,8 +285,24 @@ const loginUser = async ({email, password, ipAddress}) => {
         
         email: user.email,
 
-        role: user.role.name
+        role: user.role.name,
 
+        sessionId: session.id
+
+    });
+
+
+    // --- Encriptar Token De Session Antes De Guardarlo ---
+    const sessionTokenHash = hashToken(token);
+
+
+    await prisma.session.update({
+        where: {
+            id: session.id
+        },
+        data: {
+            sessionTokenHash
+        }
     });
 
     // --- Devolver Resultado ---
@@ -284,8 +317,6 @@ const loginUser = async ({email, password, ipAddress}) => {
         }
     };
 
-
-    
 };
 
 // --- Exportar Funciones Del Modulo ---
