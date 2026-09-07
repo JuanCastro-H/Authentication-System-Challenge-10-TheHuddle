@@ -82,6 +82,9 @@ const authenticateToken = async (req, res, next) => {
         }
 
 
+        // --- Comprobar Hash Del Token ---
+        const tokenHash = hashToken(token);
+
         
         // --- Guardar Usuario Autenticado ---
         req.user = decoded;
