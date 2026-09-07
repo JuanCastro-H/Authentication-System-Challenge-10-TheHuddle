@@ -50,6 +50,13 @@ const authenticateToken = async (req, res, next) => {
         }
 
 
+        // --- Buscar Session En La BD ---
+        const session = await prisma.session.findUnique({
+            where: {
+                id: decoded.sessionId
+            }
+        });
+
         
         // --- Guardar Usuario Autenticado ---
         req.user = decoded;
