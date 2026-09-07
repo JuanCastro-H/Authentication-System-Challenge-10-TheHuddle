@@ -319,8 +319,46 @@ const loginUser = async ({email, password, ipAddress}) => {
 
 };
 
+
+// --------------------------------
+//  LOGOUT
+// --------------------------------
+
+const logoutUser = async (sessionId) => {
+
+    // --- Buscar La Sesion Unica En La BD ---
+
+    const session = await prisma.session.findUnique({
+        where: {
+            id: sessionId
+        }
+    });
+
+
+    // --- Comprobar Que Existe ---
+    
+    if (!session) { // Se detiene la ejecucion y lanza un error.
+        throw new Error("SESSION_NOT_FOUND");
+    }
+
+
+    // --- Revocar Sesion ---
+
+    await prisma.session.update({
+        where: {
+            id: sessionId
+        },
+        data: {
+            revokedAt: new Date()
+        }
+    });
+
+};
+
+
 // --- Exportar Funciones Del Modulo ---
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser
 };
