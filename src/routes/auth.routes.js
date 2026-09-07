@@ -1,8 +1,10 @@
 const express = require("express");
 
-const { register, login, getCurrentUser } = require("../controllers/auth.controller");
+const { register, login, getCurrentUser, getAdminPanel } = require("../controllers/auth.controller");
 
 const { authenticateToken } = require("../middleware/auth.middleware");
+
+const { authorizeRoles } = require("../middleware/role.middleware");
 
 const router = express.Router();
 
@@ -24,5 +26,9 @@ router.post("/login", login);
 
 // --- Ruta De Prueba Protegida ---
 router.get("/me", authenticateToken, getCurrentUser);
+
+
+// --- Ruta De Panel De Admin ---
+router.get("/admin", authenticateToken, authorizeRoles("admin"), getAdminPanel);
 
 module.exports = router;
