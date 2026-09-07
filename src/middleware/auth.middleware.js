@@ -82,6 +82,12 @@ const authenticateToken = async (req, res, next) => {
         }
 
 
+        if (tokenHash !== session.sessionTokenHash){
+            return res.status(401).json({
+                message: "Invalid session token"
+            });
+        }
+
         // --- Comprobar Hash Del Token ---
         const tokenHash = hashToken(token);
 
