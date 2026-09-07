@@ -81,17 +81,16 @@ const authenticateToken = async (req, res, next) => {
             });
         }
 
+        // --- Traer Y Comprobar Hash Del Token ---
+        const tokenHash = hashToken(token);
 
         if (tokenHash !== session.sessionTokenHash){
             return res.status(401).json({
                 message: "Invalid session token"
             });
         }
-
-        // --- Comprobar Hash Del Token ---
-        const tokenHash = hashToken(token);
-
         
+
         // --- Guardar Usuario Autenticado ---
         req.user = decoded;
 

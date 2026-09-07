@@ -4,7 +4,7 @@
 
 const { registerSchema, loginSchema } = require("../validators/auth.validator");
 
-const { registerUser, loginUser }   = require("../services/auth.service");
+const { registerUser, loginUser, logoutUser }   = require("../services/auth.service");
 
 
 // -----------------------------
@@ -178,9 +178,51 @@ const getAdminPanel = (req, res) => {
 
 
 
+// --- LOGOUT ---
+
+const logout = async (req, res) => {
+
+    try {
+
+        // --- Obtener SessionId Del JWT ---
+
+        const { sessionId } = req.user; // Desestructuracion para Obtener la session de la reques.
+
+
+        // --- Revocar Sesion ---
+
+        await logoutUser(sessionId);
+
+        // --- Respuesta Exitosa ---
+
+        return res.status(200).json({
+            message: "Logout successful"
+        });
+
+    } catch (error) {
+
+        // --- Session No Encontrada ---
+        if (error.message === "SESSION_NOT_FOUND") {
+            return res.status(400).json({  // Indica que esa session ya no existe.
+                message: "Session not found"
+            });
+        }
+
+        /// --- Mostrar Error ---
+        console.error(error);
+
+        // --- Error Generico ---
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+};
+
+
 module.exports = {
     register,
     login,
     getCurrentUser,
-    getAdminPanel
+    getAdminPanel,
+    logout
 };
