@@ -65,6 +65,15 @@ const authenticateToken = async (req, res, next) => {
             });
         }
 
+
+                // --- Comprobar Si Fue Revocada ---
+        if (session.revokedAt) {
+            return res.status(401).json({
+                message: "Session revoked"
+            });
+        }
+
+
         
         // --- Guardar Usuario Autenticado ---
         req.user = decoded;
