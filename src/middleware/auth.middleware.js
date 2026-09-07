@@ -57,6 +57,14 @@ const authenticateToken = async (req, res, next) => {
             }
         });
 
+
+        // --- Comprobar Que Existe ---
+        if (!session) {
+            return res.status(401).json({
+                message: "Session not found"
+            });
+        }
+
         
         // --- Guardar Usuario Autenticado ---
         req.user = decoded;
