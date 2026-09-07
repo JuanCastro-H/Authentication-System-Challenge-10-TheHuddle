@@ -74,6 +74,14 @@ const authenticateToken = async (req, res, next) => {
         }
 
 
+        // --- Comprobar Expiracion ---
+        if (session.expiresAt <= new Date()){
+            return res.status(401).json({
+                message: "Session expired"
+            });
+        }
+
+
         
         // --- Guardar Usuario Autenticado ---
         req.user = decoded;
