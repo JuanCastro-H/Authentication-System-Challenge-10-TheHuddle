@@ -15,6 +15,7 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 // --- Cargar Variables De Entorno ---
 require("dotenv").config();
 
+// --- Libreria Para Encriptar Claves ---
 const argon2 = require("argon2");
 
 
@@ -61,39 +62,46 @@ const main = async () => {
     });
 
     console.log("Roles creados correctamente.");
+    
+    // ----------------------------------
+    // CREAR USUARIO DE PRUEBA ADMIN
+    // ----------------------------------
+    
+    // --- Busca El Rol Admin En BD ---
+    const adminRole = await prisma.role.findUnique({
+        where: {
+            name: "admin"
+        }
+    });
+    
+    // --- Comprobar Que El Rol Existe --- 
+    if (!adminRole) { throw new Error("ADMIN_ROLE_NOT_FOUND"); }
+    
+    
+    // --- Encriptar Clave ---
+    const adminPasswordHash = await argon2.hash("AdminPassword123.");
+    
+    
+    // --- Creaar O Confirmar El Usuario ---
+    
+    await prisma.user.upsert({
+        where: {   // Buscar el correo de admin de prueba.
+            email: "admin@example.com"
+        },
+        update: {},// Si Exite No Hacer nadaa.
+        create: {  // Sino Crear Desde 0.
+            email: "admin@example.com",
+            passwordHash: adminPasswordHash,
+            roleId: adminRole.id
+        }
+    });
+    
+    console.log("Usuario admin creado correctamente.");
+
 
 };
 
 
-// ----------------------------------
-// CREAR USUARIO DE PRUEBA ADMIN
-// ----------------------------------
-
-// --- Busca El Rol Admin En BD ---
-const adminRole = await prisma.role.findUnique({
-    where: {
-        name: "admin"
-    }
-});
-
-
-// --- Encriptar Clave ---
-const adminPasswordHash = await argon2.hash("AdminPassword123.");
-
-
-// --- Creaar O Confirmar El Usuario ---
-
-await prisma.user.upsert({
-    where: {   // Buscar el correo de admin de prueba.
-        email: "admin@example.com"
-    },
-    update: {},// Si Exite No Hacer nadaa.
-    create: {  // Sino Crear Desde 0.
-        email: "admin@example.com",
-        passwordHash: adminPasswordHash,
-        roleId: adminRole.id
-    }
-});
 
 
 
