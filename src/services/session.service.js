@@ -5,7 +5,7 @@
 // --- Importar Libreria Cryptografica ---
 const crypto = require("crypto");
 
-// --- Convierte Token En Texto Plano En Un Hash ---
+// --- Hashea El JWT ---
 const hashToken = (token) => {
 
     return crypto
@@ -14,6 +14,16 @@ const hashToken = (token) => {
         .digest("hex");       // Genera el resultado final en una cadena Hexadecimal.
 };
 
+
+// --- Generar Identificador Temporal Para La Session  ---
+const generateSessionPlaceholder = () => {
+    return crypto.randomBytes(32).toString("hex"); // Genera un valor temporal para iniciar la sesion.
+                                                   // Despues lo reemplazamos por el hash real del JWT.
+}
+
+
+// --- Exportar Funciones Del Modulo ---
 module.exports = {
-    hashToken
+    hashToken,
+    generateSessionPlaceholder
 };
