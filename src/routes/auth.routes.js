@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { register, login, getCurrentUser, getAdminPanel } = require("../controllers/auth.controller");
+const { register, login, getCurrentUser, getAdminPanel, logout } = require("../controllers/auth.controller");
 
 const { authenticateToken } = require("../middleware/auth.middleware");
 
@@ -30,5 +30,9 @@ router.get("/me", authenticateToken, getCurrentUser);
 
 // --- Ruta De Panel De Admin ---
 router.get("/admin", authenticateToken, authorizeRoles("admin"), getAdminPanel);
+
+
+// --- Ruta Para Cerrar Sesion --- 
+router.post("/logout", authenticateToken, logout);
 
 module.exports = router;
