@@ -170,14 +170,6 @@ const loginUser = async ({email, password, ipAddress}) => {
     }
 
 
-    // --- Comprobar Si La Cuenta Esta Bloqueada ---
-    if (user.lockedUntil && user.lockedUntil > new Date()){
-
-        throw new Error("ACCOUNT_LOCKED");
-
-    }
-
-
     // --- Verificar Contrasenia ---
     const passwordIsValid = await verifyPassword(
         user.passwordHash,
@@ -267,6 +259,11 @@ const loginUser = async ({email, password, ipAddress}) => {
     );
 
 
+    // --- Calcular Expiracion De La Session ---
+    const expiresAt =  new Date(
+        Date.now() + 15 * 60 * 1000
+    )
+
     // --- Registrar Session En La Base De Datos ---
     const session = await prisma.session.create({
         data: {
@@ -336,7 +333,7 @@ const logoutUser = async (sessionId) => {
 
 
     // --- Comprobar Que Existe ---
-    
+
     if (!session) { // Se detiene la ejecucion y lanza un error.
         throw new Error("SESSION_NOT_FOUND");
     }
@@ -344,12 +341,12 @@ const logoutUser = async (sessionId) => {
 
     // --- Revocar Sesion ---
 
-    await prisma.session.update({
+    await prisma.session.update({ // Actualiza la session.
         where: {
             id: sessionId
         },
         data: {
-            revokedAt: new Date()
+            revokedAt: new Date() // Modifica el campo con la fecha y hora actual.
         }
     });
 
