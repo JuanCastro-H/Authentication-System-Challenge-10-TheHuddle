@@ -96,6 +96,13 @@ const login = async (req, res) => {
             ipAddress
         });
 
+        // --- Crear Y Configurar Cookie ---
+        res.cookie("sessionId", result.sessionId, {
+            httpOnly: true,                                 // Oculta la cookie en el navegador.
+            secure: process.env.NODE_ENV === "production",  // Envia laa cookie solo por un canal seguro y cifrado HTTPS.
+            sameSite: "lax",                                // Limita el envio de cookies en el contexto de sitios webs cruzados.
+            maxAge: 15 * 60 *1000                           // 15 minutos de vid.
+        });
 
         // --- RESPUESTA EXITOSA ---
 
