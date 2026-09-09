@@ -126,6 +126,82 @@ const authenticateToken = async (req, res, next) => {
             message: "Authentication required"
         });
     }
+
+    try {
+
+        // --- Buscar Sesion ---
+
+        const session = await prisma.session.findUnique({
+            where: {
+                id: sessionId
+            },
+            include: {
+                user: {
+                    include: {
+                        role: true
+                    }
+                }
+            }
+        });
+
+
+        // --- Comprobar Que Se Obtuvo ---
+        if (!session) {
+            return res.status(401).json({
+                message: "Session not found"
+            });
+        }
+
+
+        // --- Comprobar Revocacion ---
+        if (session.revokedAt) {
+            return res.status(401).json({
+                message: "Session revoked"
+            });
+        }
+
+
+        // --- Comprobar Expiracion ---
+        if (session.expiresAt <= new Date()) {
+            return res.status(401).json({
+                message: "Session expired"
+            })
+        }
+
+
+        // --- Comprobar Actividad De La Cuenta ---
+
+        if (!session.user.isActive) {
+            return res.status(403).json({
+                message: "Account inactive"
+            });
+        }
+
+
+        // --- Crear req.user ---
+
+        req.user = {
+            sub: session.user.id,
+            email: session.user.email,
+            role: session.user.role.name,
+            sessionId: session.id
+        };
+
+
+        // --- Continuar Con El Flujo ---
+
+        next();
+
+    } catch (error) {
+
+        // --- Imprimir errores ---
+        console.error(error);
+
+        // --- Devolver Error Desconocido Del Servidor ---
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
 };
 
 
