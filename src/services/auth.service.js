@@ -305,7 +305,8 @@ const loginUser = async ({email, password, ipAddress}) => {
     // --- Devolver Resultado ---
 
     return {
-        token,
+        token,                  // Devolver JWT.
+        sessionId: session.id,   // Devolver session.
 
         user: {
             id: user.id,
